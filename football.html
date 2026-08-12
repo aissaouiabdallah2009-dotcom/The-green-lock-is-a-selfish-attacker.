@@ -6,7 +6,14 @@
     <title>GREENLOCK | Striker System</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+  <script>
+    (function() {
+        var isRegistered = localStorage.getItem('greenlock_registered') === 'true';
+        if (!isRegistered) {
+            window.location.replace('register.html'); // إعادة الزائر غير المسجل لصفحة التسجيل
+        }
+    })();
+</script>
     <style>
         :root {
             --neon-green: #00ff40;
@@ -881,6 +888,8 @@
             animation: pulseGlow 1.5s infinite;
         }
     </style>
+    <!-- يُوضع داخل وسم <head> في football.html -->
+
 </head>
 <body>
 
