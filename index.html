@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GREENLOCK | Egoist Striker Registration</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Teko:wght@600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <!-- السكربت المصحح: التحقق من حالة التسجيل -->
+    <script>
+        (function() {
+            var isRegistered = localStorage.getItem('greenlock_registered') === 'true';
+            
+            if (isRegistered) {
+                // إذا كان مسجلاً مسبقاً -> توجيه لـ football.html
+                window.location.replace('football.html');
+            }
+            // إذا لم يكن مسجلاً -> لا تفعل شيئاً، دعه يبقى في الصفحة للتسجيل
+        })();
+    </script>
+    
     <style>
         :root {
             --neon-green: #00cc52;
@@ -259,6 +273,7 @@
             display: none;
             position: relative;
             padding: 10px;
+            animation: fadeIn 1s ease-out forwards;
         }
 
         .gate-frame {
@@ -361,328 +376,201 @@
 
         .neon-input::placeholder {
             color: rgba(0, 204, 82, 0.3);
-            font-weight: 400;
-            font-size: 0.9rem;
         }
 
         .neon-input:focus {
             border-color: var(--neon-green);
-            box-shadow: 0 0 10px rgba(0, 204, 82, 0.2), inset 0 0 8px rgba(0, 204, 82, 0.1);
-            background: rgba(2, 20, 8, 0.95);
-            color: #ffffff;
+            box-shadow: 0 0 15px rgba(0, 204, 82, 0.4), inset 0 0 10px rgba(0, 204, 82, 0.2);
+            background: rgba(0, 20, 5, 0.85);
         }
 
-        .input-line {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background: var(--neon-lime);
-            transition: all 0.4s ease;
-        }
-
-        .neon-input:focus ~ .input-line {
-            left: 0;
-            width: 100%;
-            box-shadow: 0 0 6px var(--neon-lime);
-        }
-
-        .system-btn {
+        .submit-btn {
             width: 100%;
             padding: 16px;
-            margin-top: 20px;
-            background: linear-gradient(135deg, rgba(0, 204, 82, 0.12), rgba(0, 136, 58, 0.25));
-            border: 1px solid var(--neon-green);
-            color: #ffffff;
+            background: var(--neon-green);
+            color: var(--dark-bg);
             font-family: 'Orbitron', sans-serif;
             font-size: 1.1rem;
             font-weight: 900;
-            letter-spacing: 3px;
+            border: none;
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             transition: all 0.3s ease;
-            text-shadow: 0 0 5px var(--neon-green);
+            box-shadow: 0 0 15px rgba(0, 204, 82, 0.4);
+            margin-top: 10px;
             clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
         }
 
-        .system-btn:hover {
-            background: linear-gradient(135deg, var(--neon-green), var(--emerald-glow));
-            color: #000000;
-            text-shadow: none;
-            box-shadow: 0 0 20px rgba(0, 204, 82, 0.4);
-            transform: translateY(-2px);
+        .submit-btn:hover {
+            background: #ffffff;
+            box-shadow: 0 0 25px #ffffff;
+            color: #000;
         }
 
-        .deco-line {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
-            margin: 22px 0;
-            opacity: 0.4;
-        }
-
-        .system-warning {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.78rem;
-            color: #a0c4ab;
-            text-align: center;
-            margin-top: 18px;
-            line-height: 1.7;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 10px 15px;
-            border: 1px dashed rgba(0, 204, 82, 0.2);
-        }
-
-        .system-warning span.highlight {
-            color: var(--neon-lime);
-            font-weight: 700;
-        }
-
-        /* Animations */
-        @keyframes logoReveal {
-            0% { opacity: 0; transform: scale(0.85) translateY(20px); filter: blur(8px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
-        }
-
+        /* ===== Animations ===== */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes logoReveal {
+            from { opacity: 0; transform: scale(1.2); text-shadow: 0 0 0px var(--neon-green); }
+            to { opacity: 1; transform: scale(1); text-shadow: 0 0 25px var(--neon-green); }
+        }
+
         @keyframes loadProgress {
             0% { width: 0%; }
+            30% { width: 45%; }
+            60% { width: 75%; }
             100% { width: 100%; }
-        }
-
-        @keyframes gateOpen {
-            0% { opacity: 0; transform: scale(0.92); filter: blur(10px); }
-            100% { opacity: 1; transform: scale(1); filter: blur(0); }
-        }
-
-        .glitch {
-            position: relative;
-        }
-        .glitch::before, .glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%; opacity: 0.4;
-        }
-        .glitch::before {
-            color: var(--neon-lime);
-            z-index: -1;
-            animation: glitch-anim 2.5s infinite linear alternate-reverse;
-        }
-
-        @keyframes glitch-anim {
-            0%, 100% { transform: translateX(0); }
-            20% { transform: translateX(-3px); }
-            40% { transform: translateX(3px); }
-            60% { transform: translateX(-1px); }
         }
     </style>
 </head>
 <body>
-
-    <!-- Navigation Bar -->
-    <nav class="system-navbar">
-        <div class="nav-brand">
-            <span class="tag">GREENLOCK</span>
-            <span>STRIKER EGO</span>
-        </div>
-    </nav>
-
+    <!-- المؤثرات البصرية الخلفية -->
     <div class="bg-grid"></div>
     <div class="aura-field"></div>
-    <div class="particles" id="particles"></div>
+    <div class="particles" id="particles-container"></div>
     <div class="scanlines"></div>
     <div class="vignette"></div>
 
-    <div class="system-container">
+    <!-- الشريط العلوي -->
+    <header class="system-navbar">
+        <div class="nav-brand">
+            GREENLOCK <span class="tag">V1.0</span>
+        </div>
+    </header>
 
-        <!-- Boot Sequence -->
-        <div class="boot-sequence" id="bootSequence">
-            <div class="system-logo glitch" data-text="GREENLOCK">GREENLOCK</div>
-            <div class="system-subtitle">EGOIST STRIKER INITIALIZATION</div>
-
+    <main class="system-container">
+        <!-- المرحلة 1: شاشة الإقلاع الوهمية -->
+        <div class="boot-sequence" id="boot-phase">
+            <div class="system-logo">SYSTEM BOOT</div>
+            <div class="system-subtitle">EGOIST PROTOCOL INITIALIZING...</div>
+            
             <div class="loading-container">
                 <div class="loading-label">
-                    <span>SYNCHRONIZING EGO AURA...</span>
-                    <span class="loading-percent" id="loadPercent">0%</span>
+                    <span>Establishing Neural Link</span>
+                    <span class="loading-percent" id="loading-text">0%</span>
                 </div>
                 <div class="loading-bar-outer">
-                    <div class="loading-bar-inner" id="loadBar"></div>
+                    <div class="loading-bar-inner"></div>
                 </div>
             </div>
-
-            <div class="boot-text" id="bootText"></div>
+            
+            <div class="boot-text" id="boot-console">
+                > System check: OK<br>
+                > Loading Striker Algorithms...<br>
+            </div>
         </div>
 
-        <!-- Egoist Registration Form -->
-        <div class="gate-container" id="gateContainer">
+        <!-- المرحلة 2: نموذج الدخول والتسجيل -->
+        <div class="gate-container" id="form-phase">
             <div class="gate-frame">
                 <div class="corner corner-tl"></div>
                 <div class="corner corner-tr"></div>
                 <div class="corner corner-bl"></div>
                 <div class="corner corner-br"></div>
-
+                
                 <div class="gate-header">
-                    <span class="gate-badge">[ PROJECT GREENLOCK • RANK #300 ]</span>
-                    <div class="gate-title">EGOIST REGISTRATION</div>
-                    <div class="gate-subtitle">DEVOUR ALL OPPONENTS • BECOME NO. 1</div>
+                    <div class="gate-badge">Authentication Required</div>
+                    <h1 class="gate-title">ENTER GREENLOCK</h1>
+                    <div class="gate-subtitle">Prove your ego on the pitch</div>
                 </div>
 
-                <div class="deco-line"></div>
-
-                <form class="player-form" id="playerForm" onsubmit="return handleSubmit(event)">
+                <form class="player-form" id="registration-form" onsubmit="initializePlayer(event)">
+                    <div class="input-group">
+                        <label for="player-name">
+                            <span>STRIKER NAME / ALIAS</span>
+                            <span class="req">[REQUIRED]</span>
+                        </label>
+                        <input type="text" id="player-name" class="neon-input" placeholder="e.g. Isagi Yoichi" required autocomplete="off">
+                    </div>
                     
                     <div class="input-group">
-                        <label>
-                            <span>REAL NAME & SURNAME <span class="req">*</span></span>
+                        <label for="player-title">
+                            <span>PRIMARY WEAPON / STYLE</span>
+                            <span class="req">[REQUIRED]</span>
                         </label>
-                        <input type="text" class="neon-input" id="playerName" placeholder="Enter your full name..." autocomplete="off" required maxlength="30">
-                        <div class="input-line"></div>
+                        <input type="text" id="player-title" class="neon-input" placeholder="e.g. Direct Shot, Speed..." required autocomplete="off">
                     </div>
 
-                    <div class="input-group">
-                        <label>
-                            <span>FOOTBALL TITLE / EGOIST ALIAS <span class="req">*</span></span>
-                        </label>
-                        <input type="text" class="neon-input" id="playerTitle" placeholder="e.g. Spatial Ace, God Striker" autocomplete="off" required maxlength="30">
-                        <div class="input-line"></div>
-                    </div>
-
-                    <button type="submit" class="system-btn" id="submitBtn">
-                        AWAKEN MY EGOIST INSTINCTS
-                    </button>
+                    <button type="submit" class="submit-btn">Initialize Egoist Data</button>
                 </form>
-
-                <div class="system-warning">
-                    <span class="highlight">[ NOTICE ]</span><br>
-                    In Green Lock, zero equals zero. Throw away ordinary teamwork — unleash your selfish vision, devour your limits, and claim the rank of World's Best Striker.
-                </div>
             </div>
         </div>
+    </main>
 
-    </div>
-
+    <!-- سكربت التحكم بالأنيميشن والتسجيل -->
     <script>
+        // 1. إنشاء الجزيئات العائمة في الخلفية
         function createParticles() {
-            const container = document.getElementById('particles');
-            const particleCount = 25;
-            for (let i = 0; i < particleCount; i++) {
-                const p = document.createElement('div');
-                p.className = 'particle';
-                p.style.left = Math.random() * 100 + '%';
-                p.style.animationDuration = (Math.random() * 6 + 4) + 's';
-                p.style.animationDelay = (Math.random() * 4) + 's';
-                container.appendChild(p);
+            const container = document.getElementById('particles-container');
+            for (let i = 0; i < 30; i++) {
+                let particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(particle);
             }
         }
+        createParticles();
 
-        const bootMessages = [
-            '> Initializing Ego Aura engine...',
-            '> Analyzing Spatial Awareness & Field Vision...',
-            '> Calibrating Flow State & Chemical Reactions...',
-            '> Awakening Lethal Striker Instincts...',
-            '> Ego Lock Established. Welcome to Green Lock!'
-        ];
-
-        function runBootSequence() {
-            const bootText = document.getElementById('bootText');
-            const loadPercent = document.getElementById('loadPercent');
-
-            let percent = 0;
-            const percentInterval = setInterval(() => {
-                percent += Math.floor(Math.random() * 6) + 2;
-                if (percent >= 100) {
-                    percent = 100;
-                    clearInterval(percentInterval);
+        // 2. محاكاة شاشة الإقلاع ثم إظهار النموذج
+        document.addEventListener("DOMContentLoaded", function() {
+            const percentText = document.getElementById('loading-text');
+            const bootConsole = document.getElementById('boot-console');
+            
+            let progress = 0;
+            const bootInterval = setInterval(() => {
+                progress += Math.floor(Math.random() * 5) + 2;
+                if(progress > 100) progress = 100;
+                percentText.innerText = progress + '%';
+                
+                if (progress === 45) bootConsole.innerHTML += "> Calibrating Ego parameters...<br>";
+                if (progress === 75) bootConsole.innerHTML += "> Syncing with global database...<br>";
+                
+                if(progress === 100) {
+                    clearInterval(bootInterval);
+                    bootConsole.innerHTML += "> Link Established. Access Granted.<br>";
+                    
+                    // إخفاء شاشة الإقلاع وعرض الفورم بعد ثانية واحدة
+                    setTimeout(() => {
+                        document.getElementById('boot-phase').style.display = 'none';
+                        document.getElementById('form-phase').style.display = 'block';
+                    }, 1200);
                 }
-                loadPercent.textContent = percent + '%';
-            }, 75);
-
-            bootMessages.forEach((msg, index) => {
-                setTimeout(() => {
-                    const line = document.createElement('div');
-                    line.innerHTML = msg;
-                    line.style.opacity = '0';
-                    line.style.animation = 'fadeIn 0.4s ease forwards';
-                    bootText.appendChild(line);
-                }, 1800 + (index * 600));
-            });
-
-            setTimeout(() => {
-                transitionToGate();
-            }, 5200);
-        }
-
-        function transitionToGate() {
-            const bootSequence = document.getElementById('bootSequence');
-            const gateContainer = document.getElementById('gateContainer');
-
-            bootSequence.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
-            bootSequence.style.opacity = '0';
-            bootSequence.style.transform = 'scale(0.92)';
-
-            setTimeout(() => {
-                bootSequence.style.display = 'none';
-                gateContainer.style.display = 'block';
-                gateContainer.style.animation = 'gateOpen 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards';
-
-                setTimeout(() => {
-                    document.getElementById('playerName').focus();
-                }, 800);
-            }, 800);
-        }
-
-        function handleSubmit(e) {
-            e.preventDefault();
-
-            const name = document.getElementById('playerName').value.trim();
-            const title = document.getElementById('playerTitle').value.trim();
-            const btn = document.getElementById('submitBtn');
-
-            if (!name || !title) {
-                alert('Please enter both your Real Name and Football Title!');
-                return false;
-            }
-
-            btn.textContent = 'DEVOURING LIMITS...';
-            btn.style.pointerEvents = 'none';
-            btn.style.background = 'linear-gradient(135deg, #00cc52, #88cc00)';
-            btn.style.color = '#000000';
-
-            const egoPlayerData = {
-                realName: name,
-                footballTitle: title,
-                registeredAt: new Date().toISOString(),
-                rank: 300,
-                egoRating: 85,
-                goalsScored: 0,
-                flowStateUnlocked: true
-            };
-
-            localStorage.setItem('greenlock_player_data', JSON.stringify(egoPlayerData));
-            localStorage.setItem('greenlock_registered', 'true');
-
-            setTimeout(() => {
-                btn.textContent = 'EGO AWAKENED!';
-                btn.style.borderColor = '#88cc00';
-                btn.style.boxShadow = '0 0 25px #00cc52';
-
-                setTimeout(() => {
-                    window.location.href = 'insex.html';
-                }, 1200);
-            }, 1200);
-
-            return false;
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            createParticles();
-            runBootSequence();
+            }, 100);
         });
+
+        // 3. وظيفة التسجيل وحفظ البيانات ثم الانتقال للصفحة الرئيسية
+        function initializePlayer(event) {
+            event.preventDefault(); // منع إعادة تحميل الصفحة
+            
+            const name = document.getElementById('player-name').value.trim();
+            const title = document.getElementById('player-title').value.trim();
+
+            if(name !== '' && title !== '') {
+                // حفظ البيانات في الذاكرة المحلية (LocalStorage) بنفس المفاتيح الموجودة في football.html
+                const playerData = {
+                    realName: name,
+                    footballTitle: title
+                };
+                
+                localStorage.setItem('greenlock_player_data', JSON.stringify(playerData));
+                localStorage.setItem('greenlock_registered', 'true');
+                
+                // تغيير النص وتوجيه المستخدم
+                const btn = document.querySelector('.submit-btn');
+                btn.innerHTML = "SYNCING... PREPARE TO ENTER";
+                btn.style.background = "#fff";
+                
+                setTimeout(() => {
+                    window.location.href = 'football.html';
+                }, 800);
+            }
+        }
     </script>
 </body>
 </html>
